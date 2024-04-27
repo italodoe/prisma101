@@ -2,6 +2,7 @@ import type { Prisma } from "@prisma/client";
 import db from "./db";
 
 export type UserOutput = Prisma.UserCreateInput;
+export type UserOutputWithoutEmail = Omit<UserOutput, "emails">;
 
 export const newUSer = async (
   firstName: string,
@@ -27,5 +28,20 @@ export const findUserById = async (
 ): Promise<UserOutput | null> => {
   return await db.user.findFirst({
     where: { userId },
+  });
+};
+
+export const findAllUsers = async (): Promise<UserOutputWithoutEmail[]> => {
+  return await db.user.findMany();
+};
+
+export const findAllUsersWithEmails = async () => {
+  return await db.user.findMany({
+    include: {
+      emails: {
+        where: { deleted: true },
+        select: { email: true },
+      },
+    },
   });
 };
