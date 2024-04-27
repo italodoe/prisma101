@@ -35,11 +35,11 @@ export const findAllUsers = async (): Promise<UserOutputWithoutEmail[]> => {
   return await db.user.findMany();
 };
 
-export const findAllUsersWithEmails = async () => {
+export const findAllUsersWithEmails = async (deleted: boolean = false) => {
   return await db.user.findMany({
     include: {
       emails: {
-        where: { deleted: true },
+        where: { deleted: deleted },
         select: { email: true },
       },
     },
